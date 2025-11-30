@@ -1,15 +1,17 @@
-
 import axios from "axios";
 
 // =========================
 // הגדרת Base URL ו-Interceptor
 // =========================
-axios.defaults.baseURL = "http://localhost:5042"; 
+// שינוי נדרש: במקום הכתובת הקבועה, משתמשים במשתנה הסביבה.
+// שימו לב: משתנה הסביבה REACT_APP_API_URL מכיל כבר את '/api' בסופו.
+// לכן, נשתמש רק ב-process.env.REACT_APP_API_URL.
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.response.use(
   response => response,
   error => {
-    console.error("Axios Error:", error); 
+    console.error("Axios Error:", error);
     return Promise.reject(error);
   }
 );
@@ -20,6 +22,7 @@ axios.interceptors.response.use(
 export default {
   // שליפת כל המשימות
   getTasks: async () => {
+    // הפנייה תהיה לכתובת הבסיס (REACT_APP_API_URL) + '/tasks'
     const result = await axios.get("/tasks");
     return result.data;
   },
@@ -31,12 +34,10 @@ export default {
   },
 
   // עדכון סטטוס משימה (סימון כהושלם/לא הושלם)
-setCompleted: async (id, isComplete) => {
-  const result = await axios.put(`/tasks/${id}`, { isComplete });
-  return result.data;
+  setCompleted: async (id, isComplete) => {
+    const result = await axios.put(`/tasks/${id}`, { isComplete });
+    return result.data;
   },
-
-
 
   // מחיקת משימה
   deleteTask: async (id) => {
